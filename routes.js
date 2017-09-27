@@ -3,6 +3,6 @@ var router = express.Router();
 var api = require('./api');
 
 /* GET users listing. */
-router.get('/', api);
+router.use(api);
 
 module.exports = router;

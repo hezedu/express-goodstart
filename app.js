@@ -15,18 +15,23 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var app = express();
-var routes = require('./routes')
-
+var routes = require('./routes');
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+app.use(favicon(path.join(__dirname,  'favicon.png')));
+
+if(global.IS_PRO){
+  app.use(logger('tiny'));
+}else{
+  app.use(logger('dev'));
+}
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/', function(req, res){
-  res.send('Hello World!');
+app.get('/', function(req, res){
+  res.send('Hello World! express自用后端API架构：<a href="https://github.com/hezedu/express-goodstart">goodstart</a>');
 });
 app.use('/api', routes);
 
@@ -38,22 +43,27 @@ app.use(function(req, res, next) {
 });
 
 // http error handler
-if(global.IS_PRO){
 
-  app.use(function(err, req, res, next) {
-    // set locals, only providing error in development
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
-  });
-}else{
+app.use(function(err, req, res, next) {
+  //console.error(err);
+  res.status(err.status || 500);
+  res.send(err.message);
+});
 
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error');
-  });
-}
+// if(global.IS_PRO){
 
+//   app.use(function(err, req, res, next) {
+//     // set locals, only providing error in development
+//     // render the error page
+//     res.status(err.status || 500);
+//     res.send(err.message);
+//   });
+// }else{
 
+//   app.use(function(err, req, res, next) {
+//     res.status(err.status || 500);
+//     res.render('error');
+//   });
+// }
 
 module.exports = app;
